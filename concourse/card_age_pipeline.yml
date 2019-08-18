@@ -1,0 +1,60 @@
+---
+resource_types:
+
+  - name: slack-notification
+    type: docker-image
+    source:
+      repository: cfcommunity/slack-notification-resource
+
+resources:
+
+#  - name: notify
+#    type: slack-notification
+#    source:
+#      url: ((slack-webhook-cestream))
+
+#  - name: daily-checkin
+#    type: time
+#    source:
+#      location: America/Chicago
+#      start: 10:00
+#      stop: 10:30
+#      days: [Monday, Tuesday, Wednesday, Thursday, Friday, Sunday]
+
+  - name: ce-reports
+    type: git
+    source:
+      uri: https://github.com/openstax/ce-reports
+
+jobs:
+  - name: run-report
+    public: true
+    plan:
+#    - get: daily-checkin
+#      trigger: true
+    - get: ce-reports
+    - task: generate-report
+      file: ce-reports/tasks/run-card-age-report.yml
+      params:
+        GITHUB_API_TOKEN: ((github-api-token))
+        ZENHUB_API_TOKEN: ((zenhub-api-token))
+      outputs:
+        - name: card-output
+    - task: show-report
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: python
+            tag: 3.7-slim
+        inputs:
+        - name: card-output
+        run:
+          path: cat
+          args: [card-output/out.txt]
+
+#    on_success:
+#      put: notify
+#      params:
+#        text_file: card-output/out
