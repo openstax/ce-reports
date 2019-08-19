@@ -1,0 +1,54 @@
+---
+resources:
+- name: ce-reports
+  type: git
+  source:
+    uri: https://github.com/openstax/ce-reports.git
+- name: daily-checkin
+  type: time
+  source:
+    location: America/Chicago
+    start: 10:00
+    stop: 10:30
+    days: [Monday, Tuesday, Wednesday, Thursday, Friday]
+- name: notify-slack
+  type: slack
+  source:
+    url: ((slack-webhook-url))
+
+resource_types:
+  - name: slack
+    type: docker-image
+    source: {repository: pumazi/concourse-slack-notification-resource}
+
+jobs:
+- name: job-list-open-prs
+  public: true
+  serial: true
+  plan:
+  - get: daily-checkin
+    trigger: true
+  - get: ce-reports
+  - task: generate-list
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: python, tag: 3.7-slim}
+
+      inputs:
+      - name: ce-reports
+      outputs:
+      - name: open-prs
+
+      run:
+        path: /bin/bash
+        args: ["-c", "ce-reports/reports/list_open_prs.py | tee open-prs/out"]
+      params:
+        GITHUB_BEARER_TOKEN: ((github-bearer-token))
+        ORGANIZATION: openstax
+
+    on_success:
+      put: notify-slack
+      params:
+        text_file: open-prs/out
