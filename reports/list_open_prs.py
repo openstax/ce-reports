@@ -11,22 +11,21 @@ GITHUB_BEARER_TOKEN = os.environ['GITHUB_BEARER_TOKEN']
 GITHUB_ENDPOINT = 'https://api.github.com/graphql'
 ORGANIZATION = os.environ['ORGANIZATION']
 MAX_PR_AGE = int(os.environ.get('MAX_PR_AGE', 31))
-DEVELOPERS = {
-    # github username: slack userid, slack username
-    'karenc': ('<@U0F9C99ST>', '@karen'),
-    'pumazi': ('<@U0F988KSQ>', '@mulich'),
-    'therealmarv': ('<@U340WT25C>', '@therealmarv'),
-    'philschatz': ('<@U0F5LRG3Z>', '@phil'),
-    'm1yag1': ('<@U0F55RAAG>', '@mike'),
-    'brenguyen711': ('<@UKPA5MS1X>', '@brenda'),
-    'omehes': ('<@UDGTHPLQ6>', '@Ottó'),
-}
-REVIEWERS = {
-    'helenemccarron': ('<@U0FU55RRT>', '@hélène'),
-    'tomjw64': ('<@U199K9DTJ>', '@Thomas'),
-    'brittany-johnson': ('<@U7FHVAJ4T>', '@BrittanyJ'),
-    'scb6': ('<@U835RC4HH>', '@scott'),
-}
+# DEVELOPERS should look like this:
+#   {"karenc": ["<@U0F9C99ST>", "@karen"],
+#    "pumazi": ["<@U0F988KSQ>", "@mulich"],
+#    "therealmarv": ["<@U340WT25C>", "@therealmarv"],
+#    "philschatz": ["<@U0F5LRG3Z>", "@phil"],
+#    "m1yag1": ["<@U0F55RAAG>", "@mike"],
+#    "brenguyen711": ["<@UKPA5MS1X>", "@brenda"],
+#    "omehes": ["<@UDGTHPLQ6>", "@Ottó"]}
+DEVELOPERS = json.loads(os.environ['DEVELOPERS'])
+# REVIEWERS should look like this:
+#   {"helenemccarron": ["<@U0FU55RRT>", "@hélène"],
+#    "tomjw64": ["<@U199K9DTJ>", "@Thomas"],
+#    "brittany-johnson": ["<@U7FHVAJ4T>", "@BrittanyJ"],
+#    "scb6": ["<@U835RC4HH>", "@scott"]}
+REVIEWERS = json.loads(os.environ['REVIEWERS'])
 REVIEWERS.update(DEVELOPERS)
 
 

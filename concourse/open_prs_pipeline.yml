@@ -8,8 +8,8 @@ resources:
   type: time
   source:
     location: America/Chicago
-    start: 10:00
-    stop: 10:30
+    start: ((start-time))
+    stop: ((stop-time))
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
 - name: notify-slack
   type: slack
@@ -47,6 +47,8 @@ jobs:
       params:
         GITHUB_BEARER_TOKEN: ((github-bearer-token))
         ORGANIZATION: openstax
+        DEVELOPERS: ((developers))
+        REVIEWERS: ((reviewers))
 
     on_success:
       put: notify-slack
