@@ -10,7 +10,7 @@ resources:
     location: America/Chicago
     start: ((start-time))
     stop: ((stop-time))
-    days: [Monday, Tuesday, Wednesday, Thursday, Friday]
+    days: ((days))
 - name: notify-slack
   type: slack
   source:
