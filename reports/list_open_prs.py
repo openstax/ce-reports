@@ -116,7 +116,8 @@ def to_slack_user(github_username, mention=True):
 
 
 def to_datetime(string):
-    return datetime.strptime(string, '%Y-%m-%dT%H:%M:%SZ')
+    if string:
+        return datetime.strptime(string, '%Y-%m-%dT%H:%M:%SZ')
 
 
 def to_days_ago(date, today=datetime.today()):
@@ -134,6 +135,8 @@ class PullRequest:
             struct.pop('commits')['nodes'][0]['commit']['pushedDate'])
         struct['createdAt'] = to_datetime(struct['createdAt'])
         struct['updatedAt'] = to_datetime(struct['updatedAt'])
+        if not self.pushed_date:
+            self.pushed_date = struct['updatedAt']
         struct['author'] = struct.pop('author')['login']
         self.fields = struct
         self.age = to_days_ago(self.fields['updatedAt'])
