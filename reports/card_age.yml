@@ -5,6 +5,7 @@ zenhub_workspace_id: 5af1f4cc12da5e6d74331b60
 zenhub_pipelines:
   - "WIP: 7 - Coding/Development"
   - "WIP: 3 - Code Review"
+  - "WIP: 3 - Needs Code Review"
 max_days_limit: 7
 # Template created using Jinja2
 # For teplate syntax see: https://jinja.palletsprojects.com/en/2.10.x/templates
