@@ -27,6 +27,9 @@ DEVELOPERS = json.loads(os.environ['DEVELOPERS'])
 #    "scb6": ["<@U835RC4HH>", "@scott"]}
 REVIEWERS = json.loads(os.environ['REVIEWERS'])
 REVIEWERS.update(DEVELOPERS)
+# BOTS should look like this:
+#  {"pyup-bot": ["cnx-automation", "cnx-deploy", "cnx-press"]}
+BOTS = json.loads(os.environ['BOTS'])
 
 
 def query_github(query):
@@ -141,7 +144,9 @@ class PullRequest:
         self.fields = struct
         self.age = to_days_ago(self.fields['updatedAt'])
         self.should_display = self.age < MAX_PR_AGE and \
-            self.fields['author'] in DEVELOPERS
+            (self.fields['author'] in DEVELOPERS or
+                self.fields['author'] in BOTS and
+                self.fields['repo_name'] in BOTS[self.fields['author']])
         self.wip = self.fields['title'].startswith('WIP')
         return self
 

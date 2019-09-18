@@ -49,6 +49,7 @@ jobs:
         ORGANIZATION: openstax
         DEVELOPERS: ((developers))
         REVIEWERS: ((reviewers))
+        BOTS: ((bots))
 
     on_success:
       put: notify-slack
