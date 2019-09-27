@@ -26,8 +26,8 @@ zenhub_policies:
       card_max_days_limit: 4
       estimate: required
     - pipeline_name: "Production Deploy"
-      wip_limit: 3
-      card_max_days_limit: 4
+      wip_limit: 0
+      card_max_days_limit: 7
       estimate: required
 output_template: |
   *Kanban Policy Report*
