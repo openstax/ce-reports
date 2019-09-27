@@ -1,11 +1,10 @@
 import os
-from datetime import datetime, timezone
 
-import dateutil.parser
 from ghzh import GitHubClient, ZenHubClient
 from jinja2 import Template
 
-from common.config import Config
+from zenhub import days_of_issue_in_pipeline
+from .common.config import Config
 
 
 ZENHUB_API_TOKEN = os.environ['ZENHUB_API_TOKEN']
@@ -50,21 +49,9 @@ if __name__ == "__main__":
                          issue["is_epic"] is False]
 
         for issue_num in issue_numbers:
+
+            days = days_of_issue_in_pipeline(zh, repo.id, issue_num)
             issue = zh.get_issue(repo_id=repo.id, issue_number=issue_num)
-            issue_events = zh.get_issue_events(
-                repo_id=repo.id,
-                issue_number=issue_num)
-
-            transfers = [_prepare_transfer(e) for e in issue_events if
-                         e["type"] == "transferIssue"]
-
-            transfers = sorted(transfers, key=lambda x: x['transferred_at'])
-
-            last_transfer = transfers[-1]
-
-            delta = datetime.now(tz=timezone.utc) - dateutil.parser.parse(
-                last_transfer["transferred_at"])
-            days = delta.days
 
             if days > config.max_days_limit:
                 gh_issue = gh.issue(owner, repository, issue_num)
