@@ -18,5 +18,5 @@ run:
     - -exc
     - |
       pip install -r ce-reports/requirements/zenhub-policies.txt
-      python ce-reports/reports/zenhub-policies.py > report-output/out.txt
+      python ce-reports/reports/zenhub_policies.py > report-output/out.txt
       cat report-output/out.txt
