@@ -7,8 +7,7 @@ from ghzh import GitHubClient, ZenHubClient
 from jinja2 import Template
 
 from common.config import Config
-
-from zenhub import days_of_issue_in_pipeline
+from common.zenhub import days_of_issue_in_pipeline
 
 ZENHUB_API_TOKEN = os.environ['ZENHUB_API_TOKEN']
 GITHUB_API_TOKEN = os.environ['GITHUB_API_TOKEN']
