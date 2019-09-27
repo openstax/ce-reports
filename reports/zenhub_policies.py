@@ -7,6 +7,7 @@ from ghzh import GitHubClient, ZenHubClient
 from jinja2 import Template
 
 from common.config import Config
+
 from common.zenhub import days_of_issue_in_pipeline
 
 ZENHUB_API_TOKEN = os.environ['ZENHUB_API_TOKEN']
@@ -50,7 +51,8 @@ if __name__ == "__main__":
         pipeline["problem_issues"] = []
 
         # Check WIP limit
-        if len(pipeline["issues"]) >= int(pipeline["wip_limit"]):
+        if (len(pipeline["issues"]) >= int(pipeline["wip_limit"])) and int(
+                pipeline["wip_limit"] > 0):
             pipeline["policy_violations"].append(":stop: Pipeline is beyond WIP Limit!")
 
         for issue in pipeline["issues"]:
@@ -63,7 +65,8 @@ if __name__ == "__main__":
 
             # Check if issue has been in the pipeline too long
             issue["age"] = days_of_issue_in_pipeline(zh, repo.id, issue["issue_number"])
-            if issue["age"] > int(pipeline["card_max_days_limit"]):
+            if (issue["age"] > int(pipeline["card_max_days_limit"])) and pipeline[
+                "card_max_days_limit"] > 0:
                 issue["policy_violations"].append(
                     f"Card is {issue['age']} days old. "
                     f"Exceeds {pipeline['card_max_days_limit']} day limit.")
