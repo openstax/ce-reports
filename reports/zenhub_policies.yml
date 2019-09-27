@@ -1,0 +1,28 @@
+repository_name: cnx
+repository_owner: openstax
+zenhub_workspace_id: 5af1f4cc12da5e6d74331b60
+zenhub_policies:
+  global:
+    pull_request_without_issue: create
+  pipeline_policies:
+    - pipeline_name: "WIP: 7 - Coding/Development"
+      wip_limit: 7
+      card_max_days_limit: 7
+      estimate: required
+output_template: |
+  *Kanban Policy Report*
+  {%- for pipeline in pipelines %}
+  {{ pipeline.name }}
+  {%- for violation in pipeline.policy_violations %}
+  {{ violation }}
+  {%- endfor %}
+    {%- for card in pipeline.problem_issues %}
+    - <{{card.url}}|#{{ card.issue_number }} {{ card.title.strip() }}>
+      {%- for violation in card.policy_violations %}
+      - {{ violation }}
+      {%- endfor %}
+    {%- endfor -%}
+  {% else %}
+    No pipeline or card problems at this time. :tada:
+  {% endfor %}
+
