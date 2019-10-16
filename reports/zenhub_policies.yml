@@ -9,7 +9,7 @@ zenhub_policies:
       wip_limit: 7
       card_max_days_limit: 7
       estimate: required
-    - pipeline_name: "WIP: 3 - Code Review"
+    - pipeline_name: "WIP: 3 - Needs Code Review"
       wip_limit: 3
       card_max_days_limit: 3
       estimate: required
