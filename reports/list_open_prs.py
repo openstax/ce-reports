@@ -9,7 +9,7 @@ from urllib.request import Request, urlopen
 
 GITHUB_BEARER_TOKEN = os.environ['GITHUB_BEARER_TOKEN']
 GITHUB_ENDPOINT = 'https://api.github.com/graphql'
-ORGANIZATION = os.environ['ORGANIZATION']
+ORGANIZATIONS = os.environ['ORGANIZATIONS'].split(',')
 MAX_PR_AGE = int(os.environ.get('MAX_PR_AGE', 31))
 # DEVELOPERS should look like this:
 #   {"karenc": ["<@U0F9C99ST>", "@karen"],
@@ -233,11 +233,12 @@ class ReviewRequest:
 
 
 prs = []
-for repo in get_open_prs(ORGANIZATION, 'OPEN'):
-    for pull_request in repo['pullRequests']:
-        pr = PullRequest.from_api(repo_name=repo['name'], **pull_request)
-        if pr.should_display:
-            prs.append(pr)
+for org in ORGANIZATIONS:
+    for repo in get_open_prs(org, 'OPEN'):
+        for pull_request in repo['pullRequests']:
+            pr = PullRequest.from_api(repo_name=repo['name'], **pull_request)
+            if pr.should_display:
+                prs.append(pr)
 
 prs.sort(key=lambda a: a.age)
 for pr in prs:
