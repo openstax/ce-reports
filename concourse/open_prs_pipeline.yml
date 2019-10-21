@@ -46,7 +46,7 @@ jobs:
         args: ["-c", "ce-reports/reports/list_open_prs.py | tee open-prs/out"]
       params:
         GITHUB_BEARER_TOKEN: ((github-bearer-token))
-        ORGANIZATION: openstax,Rhaptos
+        ORGANIZATIONS: openstax,Rhaptos
         DEVELOPERS: ((developers))
         REVIEWERS: ((reviewers))
         BOTS: ((bots))
