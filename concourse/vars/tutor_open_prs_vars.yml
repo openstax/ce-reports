@@ -1,0 +1,16 @@
+slack-webhook-url: https://hooks.slack.com/services/...
+github-bearer-token: ...
+
+developers: |
+    {"Dantemss": ["<@U0J66MW64>", "@dante"],
+     "nathanstitt": ["<@U0F5U99JB>", "@nathan"],
+     "reedstrm": ["<@U0GQ7G9B3>", "@reedstrm"],
+     "carlycurran": ["<@U28PZC5U6>", "@carlycurran"]}
+reviewers: |
+    {}
+bots: |
+    {}
+
+start-time: 10:00
+stop-time: 10:30
+days: [Tuesday, Thursday]

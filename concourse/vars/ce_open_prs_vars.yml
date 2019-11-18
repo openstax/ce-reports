@@ -1,0 +1,23 @@
+slack-webhook-url: https://hooks.slack.com/services/...
+github-bearer-token: ...
+
+# github username: slack userid, slack username
+developers: |
+    {"karenc": ["<@U0F9C99ST>", "@karen"],
+     "pumazi": ["<@U0F988KSQ>", "@mulich"],
+     "therealmarv": ["<@U340WT25C>", "@therealmarv"],
+     "philschatz": ["<@U0F5LRG3Z>", "@phil"],
+     "m1yag1": ["<@U0F55RAAG>", "@mike"],
+     "brenguyen711": ["<@UKPA5MS1X>", "@brenda"],
+     "tomjw64": ["<@U199K9DTJ>", "@Thomas"],
+     "omehes": ["<@UDGTHPLQ6>", "@Ottó"]}
+reviewers: |
+    {"helenemccarron": ["<@U0FU55RRT>", "@hélène"],
+     "brittany-johnson": ["<@U7FHVAJ4T>", "@BrittanyJ"],
+     "scb6": ["<@U835RC4HH>", "@scott"]}
+bots: |
+    {"pyup-bot": ["cnx-automation", "cnx-deploy", "cnx-press"]}
+
+start-time: 10:00
+stop-time: 10:30
+days: [Monday, Tuesday, Wednesday, Thursday, Friday]
