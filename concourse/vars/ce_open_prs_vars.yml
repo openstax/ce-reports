@@ -3,8 +3,8 @@ github-bearer-token: ...
 
 # github username: slack userid, slack username
 developers: |
-    {"karenc": ["<@U0F9C99ST>", "@karen"],
-     "pumazi": ["<@U0F988KSQ>", "@mulich"],
+    {"ckline-tryptic": ["<@UT19V4PUG>", "@chrisk"],
+     "rnathuji": ["<@UT3FKUKE2>", "@ripal"],
      "therealmarv": ["<@U340WT25C>", "@therealmarv"],
      "philschatz": ["<@U0F5LRG3Z>", "@phil"],
      "m1yag1": ["<@U0F55RAAG>", "@mike"],
@@ -14,7 +14,8 @@ developers: |
 reviewers: |
     {"helenemccarron": ["<@U0FU55RRT>", "@hélène"],
      "brittany-johnson": ["<@U7FHVAJ4T>", "@BrittanyJ"],
-     "scb6": ["<@U835RC4HH>", "@scott"]}
+     "scb6": ["<@U835RC4HH>", "@scott"],
+     "Stackblocks": ["<@U0FU4EPEK>", "@Alan"]}
 bots: |
     {"pyup-bot": ["cnx-automation", "cnx-deploy", "cnx-press"]}
 
