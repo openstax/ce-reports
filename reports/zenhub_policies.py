@@ -10,8 +10,9 @@ from common.config import Config
 
 from common.zenhub import days_of_issue_in_pipeline
 
-ZENHUB_API_TOKEN = os.environ['ZENHUB_API_TOKEN']
-GITHUB_API_TOKEN = os.environ['GITHUB_API_TOKEN']
+ZENHUB_API_TOKEN = os.environ["ZENHUB_API_TOKEN"]
+GITHUB_API_TOKEN = os.environ["GITHUB_API_TOKEN"]
+CONFIG_NAME = os.environ["CONFIG_NAME"]
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
@@ -21,7 +22,7 @@ if __name__ == "__main__":
     gh = GitHubClient(token=GITHUB_API_TOKEN)
 
     # Load the config
-    config_file = os.path.join(HERE, "zenhub_policies.yml")
+    config_file = os.path.join(HERE, CONFIG_NAME)
     config = Config(config_file)
 
     # Map config values to relevant variables
@@ -58,6 +59,9 @@ if __name__ == "__main__":
         for issue in pipeline["issues"]:
             issue["policy_violations"] = []
 
+            # We need to use github to access specific data like the description
+            gh_issue = gh.issue(owner, repository, issue["issue_number"])
+
             # Check if the issue has an estimate
             if "estimate" not in issue and pipeline["estimate"] == "required":
                 issue["policy_violations"].append("Needs Point Estimate.")
@@ -66,14 +70,13 @@ if __name__ == "__main__":
             # Check if issue has been in the pipeline too long
             issue["age"] = days_of_issue_in_pipeline(zh, repo.id, issue["issue_number"])
             if (issue["age"] > int(pipeline["card_max_days_limit"])) and pipeline[
-                "card_max_days_limit"] > 0:
+               "card_max_days_limit"] > 0:
                 issue["policy_violations"].append(
                     f"Card is {issue['age']} days old. "
                     f"Exceeds {pipeline['card_max_days_limit']} day limit.")
 
             # Add additional info if it's a problem issue
             if issue["policy_violations"]:
-                gh_issue = gh.issue(owner, repository, issue["issue_number"])
                 issue["title"] = gh_issue.title
                 issue["url"] = gh_issue.html_url
 

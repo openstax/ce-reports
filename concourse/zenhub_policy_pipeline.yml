@@ -25,6 +25,7 @@ resources:
     type: git
     source:
       uri: https://github.com/openstax/ce-reports
+      branch: check-acceptance-criteria
 
 jobs:
   - name: run-report
@@ -38,6 +39,7 @@ jobs:
       params:
         GITHUB_API_TOKEN: ((github-api-token))
         ZENHUB_API_TOKEN: ((zenhub-api-token))
+        CONFIG_NAME: ((config-name))
     on_success:
       put: notify
       params:
