@@ -1,8 +1,10 @@
 import json
 import os
+import re
 from datetime import datetime, timezone
 
 import dateutil.parser
+from bs4 import BeautifulSoup
 from ghzh import GitHubClient, ZenHubClient
 from jinja2 import Template
 
@@ -10,8 +12,9 @@ from common.config import Config
 
 from common.zenhub import days_of_issue_in_pipeline
 
-ZENHUB_API_TOKEN = os.environ['ZENHUB_API_TOKEN']
-GITHUB_API_TOKEN = os.environ['GITHUB_API_TOKEN']
+ZENHUB_API_TOKEN = os.environ["ZENHUB_API_TOKEN"]
+GITHUB_API_TOKEN = os.environ["GITHUB_API_TOKEN"]
+CONFIG_NAME = os.environ["CONFIG_NAME"]
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 
@@ -21,7 +24,7 @@ if __name__ == "__main__":
     gh = GitHubClient(token=GITHUB_API_TOKEN)
 
     # Load the config
-    config_file = os.path.join(HERE, "zenhub_policies.yml")
+    config_file = os.path.join(HERE, CONFIG_NAME)
     config = Config(config_file)
 
     # Map config values to relevant variables
@@ -58,6 +61,32 @@ if __name__ == "__main__":
         for issue in pipeline["issues"]:
             issue["policy_violations"] = []
 
+            # We need to use github to access specific data like the description
+            gh_issue = gh.issue(owner, repository, issue["issue_number"])
+
+            # Check for acceptance criteria b/c we roll like that 
+            if "acceptance_criteria" in pipeline and pipeline["acceptance_criteria"] == "required":
+                acceptance_regex = re.compile(r"Acceptance Criteria")
+                exit_regex = re.compile(r"Exit Criteria")
+                soup = BeautifulSoup(gh_issue.body_html, "html.parser")
+
+                acceptance_header = soup.find("h2", text=acceptance_regex)
+                exit_header = soup.find("h2", text=exit_regex)
+
+                if acceptance_header or exit_header:
+                    if exit_header:
+                        issue["policy_violations"].append(
+                            "Rename '## Exit Criteria' header to '## Acceptance Criteria'")
+                    header = acceptance_header or exit_header
+
+                    acceptance_items = header.find_next_siblings("ul")
+
+                    if not acceptance_items:
+                        issue["policy_violations"].append("Needs Acceptance Criteria")
+
+                else:
+                    issue["policy_violations"].append("Needs Acceptance Criteria")
+
             # Check if the issue has an estimate
             if "estimate" not in issue and pipeline["estimate"] == "required":
                 issue["policy_violations"].append("Needs Point Estimate.")
@@ -73,7 +102,6 @@ if __name__ == "__main__":
 
             # Add additional info if it's a problem issue
             if issue["policy_violations"]:
-                gh_issue = gh.issue(owner, repository, issue["issue_number"])
                 issue["title"] = gh_issue.title
                 issue["url"] = gh_issue.html_url
 

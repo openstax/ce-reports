@@ -9,22 +9,27 @@ zenhub_policies:
       wip_limit: 7
       card_max_days_limit: 7
       estimate: required
+      acceptance_criteria: required
     - pipeline_name: "WIP: 3 - Needs Code Review"
       wip_limit: 3
       card_max_days_limit: 3
       estimate: required
+      acceptance_criteria: required
     - pipeline_name: "Merged"
       wip_limit: 0
       card_max_days_limit: 4
       estimate: required
+      acceptance_criteria: required
     - pipeline_name: "WIP: 3 - QA Testing"
       wip_limit: 3
       card_max_days_limit: 4
       estimate: required
+      acceptance_criteria: required
     - pipeline_name: "Regression Testing"
       wip_limit: 3
       card_max_days_limit: 4
       estimate: required
+      acceptance_criteria: required
     - pipeline_name: "Production Deploy"
       wip_limit: 0
       card_max_days_limit: 7

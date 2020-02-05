@@ -8,6 +8,7 @@ image_resource:
 params:
   GITHUB_API_TOKEN: ((github-api-token))
   ZENHUB_API_TOKEN: ((zenhub-api-token))
+  CONFIG_NAME: ((config-name))
 inputs:
   - name: ce-reports
 outputs:
