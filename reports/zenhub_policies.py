@@ -1,8 +1,10 @@
 import json
 import os
+import re
 from datetime import datetime, timezone
 
 import dateutil.parser
+from bs4 import BeautifulSoup
 from ghzh import GitHubClient, ZenHubClient
 from jinja2 import Template
 
@@ -62,6 +64,29 @@ if __name__ == "__main__":
             # We need to use github to access specific data like the description
             gh_issue = gh.issue(owner, repository, issue["issue_number"])
 
+            # Check for acceptance criteria b/c we roll like that 
+            if "acceptance_criteria" in pipeline and pipeline["acceptance_criteria"] == "required":
+                acceptance_regex = re.compile(r"Acceptance Criteria")
+                exit_regex = re.compile(r"Exit Criteria")
+                soup = BeautifulSoup(gh_issue.body_html, "html.parser")
+
+                acceptance_header = soup.find("h2", text=acceptance_regex)
+                exit_header = soup.find("h2", text=exit_regex)
+
+                if acceptance_header or exit_header:
+                    if exit_header:
+                        issue["policy_violations"].append(
+                            "Rename '## Exit Criteria' header to '## Acceptance Criteria'")
+                    header = acceptance_header or exit_header
+
+                    acceptance_items = header.find_next_siblings("ul")
+
+                    if not acceptance_items:
+                        issue["policy_violations"].append("Needs Acceptance Criteria")
+
+                else:
+                    issue["policy_violations"].append("Needs Acceptance Criteria")
+
             # Check if the issue has an estimate
             if "estimate" not in issue and pipeline["estimate"] == "required":
                 issue["policy_violations"].append("Needs Point Estimate.")
@@ -70,7 +95,7 @@ if __name__ == "__main__":
             # Check if issue has been in the pipeline too long
             issue["age"] = days_of_issue_in_pipeline(zh, repo.id, issue["issue_number"])
             if (issue["age"] > int(pipeline["card_max_days_limit"])) and pipeline[
-               "card_max_days_limit"] > 0:
+                "card_max_days_limit"] > 0:
                 issue["policy_violations"].append(
                     f"Card is {issue['age']} days old. "
                     f"Exceeds {pipeline['card_max_days_limit']} day limit.")
