@@ -25,7 +25,6 @@ resources:
     type: git
     source:
       uri: https://github.com/openstax/ce-reports
-      branch: check-acceptance-criteria
 
 jobs:
   - name: run-report
