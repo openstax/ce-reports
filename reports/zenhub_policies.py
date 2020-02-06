@@ -76,20 +76,20 @@ if __name__ == "__main__":
                 if acceptance_header or exit_header:
                     if exit_header:
                         issue["policy_violations"].append(
-                            "Rename '## Exit Criteria' header to '## Acceptance Criteria'")
+                            ":warning: Rename '## Exit Criteria' header to '## Acceptance Criteria'")
                     header = acceptance_header or exit_header
 
                     acceptance_items = header.find_next_siblings("ul")
 
                     if not acceptance_items:
-                        issue["policy_violations"].append("Needs Acceptance Criteria")
+                        issue["policy_violations"].append(":warning: Needs Acceptance Criteria")
 
                 else:
-                    issue["policy_violations"].append("Needs Acceptance Criteria")
+                    issue["policy_violations"].append(":warning: Needs Acceptance Criteria")
 
             # Check if the issue has an estimate
             if "estimate" not in issue and pipeline["estimate"] == "required":
-                issue["policy_violations"].append("Needs Point Estimate.")
+                issue["policy_violations"].append(":game_die: Needs Point Estimate.")
                 pipeline["problem_issues"].append(issue)
 
             # Check if issue has been in the pipeline too long
