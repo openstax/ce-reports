@@ -166,7 +166,7 @@ class PullRequest:
 
     def __str__(self):
         s = """\
-{user} submitted <{url}|{repo_name}#{num}> "_{title}_", updated {age} ago:
+{user} submitted <{url}|{repo_name}#{num} _{title}_>, updated {age} ago:
 """.format(user=self.display_author(),
            repo_name=self.fields['repo_name'],
            num=self.fields['number'],
