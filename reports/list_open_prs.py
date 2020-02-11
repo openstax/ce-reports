@@ -166,7 +166,7 @@ class PullRequest:
 
     def __str__(self):
         s = """\
-{user} submitted {repo_name}#{num} "<{url}|{title}>", updated {age} ago:
+{user} submitted <{url}|{repo_name}#{num}> "_{title}_", updated {age} ago:
 """.format(user=self.display_author(),
            repo_name=self.fields['repo_name'],
            num=self.fields['number'],
@@ -239,6 +239,10 @@ for org in ORGANIZATIONS:
             pr = PullRequest.from_api(repo_name=repo['name'], **pull_request)
             if pr.should_display:
                 prs.append(pr)
+
+print("*Outstanding Pull Requests*")
+if len(prs) == 0:
+    print("No outstanding Pull Requests")
 
 prs.sort(key=lambda a: a.age)
 for pr in prs:
