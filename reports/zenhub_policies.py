@@ -90,7 +90,6 @@ if __name__ == "__main__":
             # Check if the issue has an estimate
             if "estimate" not in issue and pipeline["estimate"] == "required":
                 issue["policy_violations"].append(":game_die: Needs Point Estimate.")
-                pipeline["problem_issues"].append(issue)
 
             # Check if issue has been in the pipeline too long
             issue["age"] = days_of_issue_in_pipeline(zh, repo.id, issue["issue_number"])
@@ -100,10 +99,12 @@ if __name__ == "__main__":
                     f"Card is {issue['age']} days old. "
                     f"Exceeds {pipeline['card_max_days_limit']} day limit.")
 
-            # Add additional info if it's a problem issue
+            # Add additional info if issue has policy violations and add to pipeline
+            # problem issues
             if issue["policy_violations"]:
                 issue["title"] = gh_issue.title
                 issue["url"] = gh_issue.html_url
+                pipeline["problem_issues"].append(issue)
 
         # If any issues exist or there are pipeline violations append
         if pipeline["policy_violations"] or pipeline["problem_issues"]:
