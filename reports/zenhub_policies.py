@@ -88,7 +88,9 @@ if __name__ == "__main__":
                     issue["policy_violations"].append(":warning: Needs Acceptance Criteria")
 
             # Check if the issue has an estimate
-            if "estimate" not in issue and pipeline["estimate"] == "required":
+            if ("estimate" not in issue
+                    and "estimate" in pipeline
+                    and pipeline["estimate"] == "required"):
                 issue["policy_violations"].append(":game_die: Needs Point Estimate.")
 
             # Check if issue has been in the pipeline too long
