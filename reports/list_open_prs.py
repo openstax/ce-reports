@@ -59,6 +59,7 @@ query {
                         url
                         title
                         number
+                        isDraft
                         createdAt
                         updatedAt
                         author {
@@ -148,6 +149,7 @@ class PullRequest:
                 self.fields['author'] in BOTS and
                 self.fields['repo_name'] in BOTS[self.fields['author']])
         self.wip = self.fields['title'].startswith('WIP')
+        self.isDraft = self.fields['isDraft']
         return self
 
     def newer_than(self, time):
@@ -240,12 +242,24 @@ for org in ORGANIZATIONS:
             if pr.should_display:
                 prs.append(pr)
 
+draft_prs = list(filter(lambda pr: pr.isDraft, prs))
+outstanding_prs = list(filter(lambda pr: not pr.isDraft, prs))
+
 print("*Outstanding Pull Requests*")
-if len(prs) == 0:
+if len(outstanding_prs) == 0:
     print("No outstanding Pull Requests")
 
-prs.sort(key=lambda a: a.age)
-for pr in prs:
+outstanding_prs.sort(key=lambda a: a.age)
+for pr in outstanding_prs:
     print(str(pr))
+
+print("*Draft Pull Requests*")
+if len(draft_prs) == 0:
+    print("No draft Pull Requests")
+
+draft_prs.sort(key=lambda a: a.age)
+for pr in draft_prs:
+    print(str(pr))
+
 print("<https://github.com/pulls/review-requested|PRs for you to review>")
 print("<https://github.com/openstax/ce-reports|Source Code>")
