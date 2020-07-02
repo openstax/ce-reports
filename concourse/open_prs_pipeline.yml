@@ -14,7 +14,7 @@ resources:
 - name: notify-slack
   type: slack
   source:
-    url: ((slack-webhook-url))
+    url: ((slack-webhook-content-engineering))
 
 resource_types:
   - name: slack
@@ -45,7 +45,7 @@ jobs:
         path: /bin/bash
         args: ["-c", "ce-reports/reports/list_open_prs.py | tee open-prs/out"]
       params:
-        GITHUB_BEARER_TOKEN: ((github-bearer-token))
+        GITHUB_BEARER_TOKEN: ((github-api-token))
         ORGANIZATIONS: openstax,Rhaptos
         DEVELOPERS: ((developers))
         REVIEWERS: ((reviewers))

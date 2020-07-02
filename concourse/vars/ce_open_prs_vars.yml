@@ -1,5 +1,5 @@
-slack-webhook-url: https://hooks.slack.com/services/...
-github-bearer-token: ...
+# slack-webhook-content-engineering: https://hooks.slack.com/services/...
+# github-api-token: ...
 
 # github username: slack userid, slack username
 developers: |
@@ -12,8 +12,7 @@ developers: |
      "tomjw64": ["<@U199K9DTJ>", "@Thomas"],
      "omehes": ["<@UDGTHPLQ6>", "@Ottó"]}
 reviewers: |
-    {"helenemccarron": ["<@U0FU55RRT>", "@hélène"],
-     "brittany-johnson": ["<@U7FHVAJ4T>", "@BrittanyJ"],
+    {"brittany-johnson": ["<@U7FHVAJ4T>", "@BrittanyJ"],
      "scb6": ["<@U835RC4HH>", "@scott"],
      "Stackblocks": ["<@U0FU4EPEK>", "@Alan"]}
 bots: |
