@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
             # Check for acceptance criteria b/c we roll like that 
             if "acceptance_criteria" in pipeline and pipeline["acceptance_criteria"] == "required":
-                acceptance_regex = re.compile(r"Acceptance Criteria")
+                acceptance_regex = re.compile(r"[Aa]cceptance [Cc]riteria")
                 exit_regex = re.compile(r"Exit Criteria")
                 soup = BeautifulSoup(gh_issue.body_html, "html.parser")
 
