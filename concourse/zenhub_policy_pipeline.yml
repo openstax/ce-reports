@@ -3,7 +3,10 @@ resource_types:
 
   - name: slack-notification
     type: docker-image
-    source: {repository: pumazi/concourse-slack-notification-resource}
+    source:
+      repository: pumazi/concourse-slack-notification-resource
+      username: ((ce-dockerhub-id))
+      password: ((ce-dockerhub-token))
 
 resources:
 
