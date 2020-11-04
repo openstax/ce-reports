@@ -30,6 +30,9 @@ resources:
 
 jobs:
   - name: run-report
+    build_log_retention:
+      builds: 3
+      minimum_succeeded_builds: 1
     public: true
     plan:
     - get: daily-checkin
