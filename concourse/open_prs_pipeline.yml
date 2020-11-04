@@ -29,6 +29,9 @@ resource_types:
 
 jobs:
 - name: job-list-open-prs
+  build_log_retention:
+    builds: 3
+    minimum_succeeded_builds: 1
   public: true
   serial: true
   plan:
