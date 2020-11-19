@@ -5,6 +5,8 @@ image_resource:
   source:
     repository: python
     tag: 3.7-slim
+    username: ((ce-dockerhub-id))
+    password: ((ce-dockerhub-token))
 params:
   GITHUB_API_TOKEN: ((github-api-token))
   ZENHUB_API_TOKEN: ((zenhub-api-token))
