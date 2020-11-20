@@ -1,19 +1,5 @@
 ---
-resource_types:
-
-  - name: slack-notification
-    type: docker-image
-    source:
-      repository: pumazi/concourse-slack-notification-resource
-      username: ((ce-dockerhub-id))
-      password: ((ce-dockerhub-token))
-
 resources:
-
-  - name: notify
-    type: slack-notification
-    source:
-      url: ((slack-webhook-content-engineering))
 
   - name: daily-checkin
     type: time
@@ -45,6 +31,23 @@ jobs:
         ZENHUB_API_TOKEN: ((zenhub-api-token))
         CONFIG_NAME: ce_zenhub_policies.config.yml
     on_success:
-      put: notify
-      params:
-        text_file: report-output/out.txt
+      task: notify slack
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: curlimages/curl
+            username: ((ce-dockerhub-id))
+            password: ((ce-dockerhub-token))
+        inputs:
+        - name: report-output
+        params:
+          WEBHOOK_URL: ((slack-webhook-content-engineering))
+        run:
+          path: /bin/sh
+          args:
+          - -cxe
+          - |-
+            message=$(cat report-output/out.txt)
+            curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"${message}\"}" "$WEBHOOK_URL"

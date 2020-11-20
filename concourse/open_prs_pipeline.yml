@@ -15,17 +15,6 @@ resources:
     start: ((start-time))
     stop: ((stop-time))
     days: ((days))
-- name: notify-slack
-  type: slack
-  source:
-    url: ((slack-webhook-content-engineering))
-
-resource_types:
-  - name: slack
-    type: docker-image
-    source:
-      repository: pumazi/concourse-slack-notification-resource
-      <<: *docker-credentials
 
 jobs:
 - name: job-list-open-prs
@@ -64,6 +53,22 @@ jobs:
         BOTS: ((bots))
 
     on_success:
-      put: notify-slack
-      params:
-        text_file: open-prs/out
+      task: notify slack
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: curlimages/curl
+            <<: *docker-credentials
+        inputs:
+        - name: open-prs
+        params:
+          WEBHOOK_URL: ((slack-webhook-content-engineering))
+        run:
+          path: /bin/sh
+          args:
+          - -cxe
+          - |-
+            message=$(cat open-prs/out)
+            curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"${message}\"}" "$WEBHOOK_URL"
