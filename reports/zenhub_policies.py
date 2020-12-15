@@ -56,7 +56,7 @@ if __name__ == "__main__":
         # Check WIP limit
         if (len(pipeline["issues"]) >= int(pipeline["wip_limit"])) and int(
                 pipeline["wip_limit"] > 0):
-            pipeline["policy_violations"].append(":rotating_light: Pipeline has met"
+            pipeline["policy_violations"].append(":rotating_light: Pipeline has met "
                                                  "or exceeded the WIP Limit!")
 
         for issue in pipeline["issues"]:
