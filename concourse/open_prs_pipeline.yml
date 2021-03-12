@@ -71,5 +71,5 @@ jobs:
           - -cxe
           - |-
             message=$(cat open-prs/out)
-            escaped=${message//"/'}
+            escaped=${message//\"/\'}
             curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"${escaped}\"}" "$WEBHOOK_URL"
