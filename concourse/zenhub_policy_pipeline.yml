@@ -5,8 +5,8 @@ resources:
     type: time
     source:
       location: America/Chicago
-      start: 08:30
-      stop: 09:30
+      start: 10:30
+      stop: 11:00
       days: [Monday, Tuesday, Wednesday, Thursday, Friday]
 
   - name: ce-reports
