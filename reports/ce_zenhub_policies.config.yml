@@ -8,8 +8,8 @@ zenhub_policies:
     - pipeline_name: "Needs Decomp/Analysis"
       wip_limit: 0
       card_max_days_limit: 7
-    - pipeline_name: "WIP: 7 - Coding/Development"
-      wip_limit: 7
+    - pipeline_name: "WIP: 4 - Coding/Development"
+      wip_limit: 4
       card_max_days_limit: 7
       estimate: required
       acceptance_criteria: required
