@@ -1,5 +1,44 @@
 # Content Engineering Reports
 
+## How the reports work
+
+The reports use a Concourse pipelines to execute. Concourse is our "continuous thing-doer." We are able to execute the reports in a series of steps as can be seen in in the following [example](https://github.com/openstax/ce-reports/blob/master/concourse/zenhub_policy_pipeline.yml#L2-L28):
+
+```
+---
+resources:
+
+  - name: daily-checkin
+    type: time
+    source:
+      location: America/Chicago
+      start: 10:30
+      stop: 11:00
+      days: [Monday, Tuesday, Wednesday, Thursday, Friday]
+
+  - name: ce-reports
+    type: git
+    source:
+      uri: https://github.com/openstax/ce-reports
+
+jobs:
+  - name: run-report
+    build_log_retention:
+      builds: 3
+      minimum_succeeded_builds: 1
+    public: true
+    plan:
+    - get: daily-checkin
+      trigger: true
+    - get: ce-reports
+    - task: generate-report
+      file: ce-reports/tasks/run-zenhub-policy-report.yml
+```
+
+The jobs typically run on a schedule using the `time` resource included with Concourse. The explanation of resources, jobs, and pipelines is out of scope for this document. If you wish to familiarize yourself with Concourse the [Stark and Wayne Tutorial](https://concoursetutorial.com/) is a great place to start.
+
+Concourse pipelines have the capability to have tasks defined in file. If you review the last task in the examble above you can see we run the task included within the ce-reports repository in `./ce-reports/tasks/run-zenhub-policy-report.yml`
+
 The following reports are contained within the repository.
 
 * [Pull Request Report](./reports/list_open_prs.py)
@@ -71,3 +110,33 @@ The following checks take place during the report that we've agreed should be po
 * Issues should only be in specific pipelines for a set amount of days. This is to signal to the team that we may need break up cards or things are more complicated than they initially seemed.
 * An estimate should exist if it's to be added to ready to start. 
 * WIP limits are not exceeded in the various pipelines.
+
+## How to update the reports
+
+If a change occurs in either of the reports at the task level there should be no need to make any changes to the pipeline. The pipeline should automatically detect changes to this repository, pull a copy, and execute the pipeline. If a change occurs in the pipeline definition itself this will require the exectution of the `fly` cli tool that interacts with Concourse to set the pipeline.
+
+As an example, we'll update the kanban policy report. If the pipeline code changes the timer that the report will execute we'll need to update Concourse with the new pipeline.
+
+### Login to Concourse with your LDAP username and set a target
+
+> Note :pencil:: You can download the fly executable from the Concourse web address. The current address at the time of this writing is https://concourse-v6.openstax.org. From the main page download the executable to a place on your local machine. You may want to update your configuration to place fly in your PATH variable. You may need to alter the Concourse url if a new version has been deployed.
+
+Run the following to login to concourse and set a target:
+
+```
+fly login --target v6 --concourse-url https://concourse-v6.openstax.org --team-name CE
+```
+
+You will be directed to visit a web address to login to Concourse. Upon successful login with LDAP credentials the fly command will prompt you that your target has been saved. Your token will be saved locally along with your target in your `~/.flyrc` file. At this point, you can continue to execute fly commands to update the pipeline.
+
+### Update the report by using fly set-pipeline
+
+To update the pipeline you'll first need to locate the pipeline file you'd like to update. These are located in the [./concourse](directory). In the following example we'll update the ZenHub Policy Report.
+
+To update the report we run the set-pipeline command:
+
+```
+fly --target v6 set-pipeline --config ./concourse/zenhub_policy_pipeline.yml --pipeline report-kanban-policy
+```
+
+The fly CLI will prompt you to accept the changes by presenting a diff. Accept to approve the changes or cancel if you see any mistakes.
