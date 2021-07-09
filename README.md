@@ -140,3 +140,5 @@ fly --target v6 set-pipeline --config ./concourse/zenhub_policy_pipeline.yml --p
 ```
 
 The fly CLI will prompt you to accept the changes by presenting a diff. Accept to approve the changes or cancel if you see any mistakes.
+
+> FIXME :warning:: We've documented the process to update the kanban policy report but need more documentation on how to update the Open Pull Requests. It appears there is a vars file with some secrets. This documentation needs to be updated with that process.
