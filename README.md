@@ -119,12 +119,12 @@ As an example, we'll update the kanban policy report. If the pipeline code chang
 
 ### Login to Concourse with your LDAP username and set a target
 
-> Note :pencil:: You can download the fly executable from the Concourse web address. The current address at the time of this writing is https://concourse-v6.openstax.org. From the main page download the executable to a place on your local machine. You may want to update your configuration to place fly in your PATH variable. You may need to alter the Concourse url if a new version has been deployed.
+> Note :pencil:: You can download the fly executable from the Concourse web address. The current address at the time of this writing is https://concourse-v7.openstax.org. From the main page download the executable to a place on your local machine. You may want to update your configuration to place fly in your PATH variable. You may need to alter the Concourse url if a new version has been deployed.
 
 Run the following to login to concourse and set a target:
 
 ```
-fly login --target v6 --concourse-url https://concourse-v6.openstax.org --team-name CE
+fly login --target v7 --concourse-url https://concourse-v7.openstax.org --team-name CE
 ```
 
 You will be directed to visit a web address to login to Concourse. Upon successful login with LDAP credentials the fly command will prompt you that your target has been saved. Your token will be saved locally along with your target in your `~/.flyrc` file. At this point, you can continue to execute fly commands to update the pipeline.
@@ -136,7 +136,12 @@ To update the pipeline you'll first need to locate the pipeline file you'd like 
 To update the report we run the set-pipeline command:
 
 ```
-fly --target v6 set-pipeline --config ./concourse/zenhub_policy_pipeline.yml --pipeline report-kanban-policy
+fly --target v7 set-pipeline --config ./concourse/zenhub_policy_pipeline.yml --pipeline report-kanban-policy
+
+fly --target v7 set-pipeline \
+  --config ./concourse/open_prs_pipeline.yml \
+  --pipeline report-open-prs \
+  --load-vars-from=./concourse/vars/ce_open_prs_vars.yml
 ```
 
 The fly CLI will prompt you to accept the changes by presenting a diff. Accept to approve the changes or cancel if you see any mistakes.
