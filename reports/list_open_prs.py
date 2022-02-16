@@ -9,6 +9,9 @@ from urllib.request import Request, urlopen
 
 GITHUB_BEARER_TOKEN = os.environ['GITHUB_BEARER_TOKEN']
 GITHUB_ENDPOINT = 'https://api.github.com/graphql'
+# The variables for the GraphQL pull
+PULL_PAGE_SIZE = os.environ['pull-page-size']
+MAX_REPOSITORIES_PULLED = os.environ['max-repositories-pulled']
 ORGANIZATIONS = os.environ['ORGANIZATIONS'].split(',')
 MAX_PR_AGE = int(os.environ.get('MAX_PR_AGE', 31))
 # DEVELOPERS should look like this:
@@ -32,17 +35,31 @@ REVIEWERS.update(DEVELOPERS)
 BOTS = json.loads(os.environ['BOTS'])
 
 
-def query_github(query):
-    req = Request(GITHUB_ENDPOINT, method='POST',
-                  data=json.dumps({'query': query}).encode('utf-8'),
-                  headers={'Authorization': 'bearer {}'.format(
-                      GITHUB_BEARER_TOKEN)})
-    # Sometimes the Github endpoint returns inconsistent results or the calls fail, so we retry
-    content = http_call_with_retry(request=req, max_retries=3)
-    if not content:
-        sys.stderr.write('{}\n'.format(query))
-        raise RuntimeError('Error when querying github: {}'.format(content))
-    return content
+def query_github(query, org, states):
+    i = 1
+    nodes = []
+    cursor = None
+    # Query as much pages needed to reach the maximum repositories to pull
+    while PULL_PAGE_SIZE * i <= MAX_REPOSITORIES_PULLED:
+        i += 1
+        # format the query to add if needed the current cursor
+        formatted_query = query % (org, PULL_PAGE_SIZE, cursor if cursor else '', states)
+        req = Request(GITHUB_ENDPOINT, method='POST', data=json.dumps({'query': formatted_query}).encode('utf-8'),
+                      headers={'Authorization': 'bearer {}'.format(GITHUB_BEARER_TOKEN)})
+        # Sometimes the Github endpoint returns inconsistent results or the calls fail, so we retry
+        # The inconsistent 502 error should be solved by the pagination fix,
+        content = http_call_with_retry(request=req, max_retries=3)
+        if not content:
+            sys.stderr.write('{}\n'.format(query))
+            break
+        data = content['data']['organization']['repositories']
+        nodes.extend(data['nodes'])
+        if data['pageInfo'] and data['pageInfo']['hasNextPage']:
+            # Retrieving the current cursor for the next query.
+            cursor = f' after: "{data["pageInfo"]["endCursor"]}" '
+        else:
+            break
+    return nodes
 
 
 def http_call_with_retry(request: Request = None, max_retries: int = 1):
@@ -64,7 +81,7 @@ def http_call_with_retry(request: Request = None, max_retries: int = 1):
                     continue
                 else:
                     break
-            sleep(1000)
+            sleep(2)
     return None
 
 
@@ -73,7 +90,7 @@ def get_open_prs(org, states):
 query {
     organization(login: "%s") {
         repositories(orderBy: { field: UPDATED_AT, direction: DESC }
-                     first: 100) {
+                     first: %s %s ) {
             nodes {
                 name
                 pullRequests(states: %s
@@ -125,8 +142,7 @@ query {
     }
 }
 """
-    result = query_github(query % (org, states))['data']['organization'][
-        'repositories']['nodes']
+    result = query_github(query, org, states)
     for repo in result:
         if repo['pullRequests']['nodes']:
             yield {
