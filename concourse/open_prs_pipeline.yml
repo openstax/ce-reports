@@ -51,6 +51,8 @@ jobs:
         DEVELOPERS: ((developers))
         REVIEWERS: ((reviewers))
         BOTS: ((bots))
+        PULL_PAGE_SIZE: ((pull-page-size))
+        MAX_REPOSITORIES_PULLED: ((max-repositories-pulled))
 
     on_success:
       task: notify slack

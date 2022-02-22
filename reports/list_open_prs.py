@@ -10,8 +10,8 @@ from urllib.request import Request, urlopen
 GITHUB_BEARER_TOKEN = os.environ['GITHUB_BEARER_TOKEN']
 GITHUB_ENDPOINT = 'https://api.github.com/graphql'
 # The variables for the GraphQL pull
-PULL_PAGE_SIZE = os.environ['pull-page-size']
-MAX_REPOSITORIES_PULLED = os.environ['max-repositories-pulled']
+PULL_PAGE_SIZE = os.environ['PULL_PAGE_SIZE']
+MAX_REPOSITORIES_PULLED = os.environ['MAX_REPOSITORIES_PULLED']
 ORGANIZATIONS = os.environ['ORGANIZATIONS'].split(',')
 MAX_PR_AGE = int(os.environ.get('MAX_PR_AGE', 31))
 # DEVELOPERS should look like this:
