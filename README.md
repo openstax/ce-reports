@@ -39,35 +39,9 @@ The jobs typically run on a schedule using the `time` resource included with Con
 
 Concourse pipelines have the capability to have tasks defined in file. If you review the last task in the examble above you can see we run the task included within the ce-reports repository in `./ce-reports/tasks/run-zenhub-policy-report.yml`
 
-The following reports are contained within the repository.
+The following report is contained within the repository.
 
-* [Pull Request Report](./reports/list_open_prs.py)
 * [Kanban Policy Report](./reports/zenhub_policies.py)
-
-### Open Pull Request Report
-
-A report that posts to the #content-engineering slack channel which displays the status of all pull requests for each member of the team. The output looks like the following:
-
-```
-Outstanding Pull Requests
-@ripal submitted poet#89 Log stack trace on error in bundleTreesHandler, updated 0 days ago:
-   - Pending reviews from: N/A
-@ripal submitted poet#86 Add git history as dependency and include button, updated 0 days ago:
-   - Pending reviews from: @therealmarv, @chrisk
-@ripal submitted cnx-epub#176 Prefix page IDs with page_ when formatting, updated 1 day ago:
-   - Pending reviews from: @phil
-@therealmarv submitted poet#88 Fix 1348 ensure ids, updated 2 days ago:
-   - Pending reviews from: N/A
-pyup-bot submitted cnx-automation#744 Scheduled monthly dependency update for July, updated 6 days ago:
-   - Pending reviews from: N/A
-@chrisk submitted staxly#102 (feat) Start CORGI jobs when book repos are tagged, updated 7 days ago:
-   - Pending reviews from: N/A
-@phil submitted output-producer-service#361 Show missing files during checksum, updated 30 days ago:
-   - Reviewed by: @ripal (APPROVED)
-   - Pending reviews from: N/A
-Draft Pull Requests
-No draft Pull Requests
-```
 
 ### Kanban Policy Report
 
